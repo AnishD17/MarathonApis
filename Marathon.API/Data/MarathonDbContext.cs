@@ -16,6 +16,7 @@ namespace Marathon.API.Data
 		public DbSet<Registration> Registrations { get; set; }
 		public DbSet<Result> Results { get; set; }
 		public DbSet<Runner> Runners { get; set; }
+		public DbSet<Image> Images { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
