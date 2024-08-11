@@ -15,16 +15,20 @@ namespace Marathon.API.Controllers
 	{
 		private readonly IRunnerRepository runnerRepository;
 		private readonly IMapper mapper;
+		private readonly ILogger<RunnerController> logger;
 
-		public RunnerController(IRunnerRepository runnerRepository,IMapper mapper)
+		public RunnerController(IRunnerRepository runnerRepository,IMapper mapper,ILogger<RunnerController> logger)
         {
 			this.runnerRepository=runnerRepository;
 			this.mapper=mapper;
+			this.logger=logger;
 		}
         [HttpGet]
 		public async Task<IActionResult> GetRunnerRecord()
 		{
 			var runnerDomainRecords = await runnerRepository.GetAllRunnersAsync();
+
+			throw new Exception("Something went wrong");
 
 			var runnerResponse = mapper.Map<List<RunnerResponseDto>>(runnerDomainRecords);
 			return Ok(runnerDomainRecords);
