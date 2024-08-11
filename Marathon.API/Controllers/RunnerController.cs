@@ -27,9 +27,6 @@ namespace Marathon.API.Controllers
 		public async Task<IActionResult> GetRunnerRecord()
 		{
 			var runnerDomainRecords = await runnerRepository.GetAllRunnersAsync();
-
-			throw new Exception("Something went wrong");
-
 			var runnerResponse = mapper.Map<List<RunnerResponseDto>>(runnerDomainRecords);
 			return Ok(runnerDomainRecords);
 		}
