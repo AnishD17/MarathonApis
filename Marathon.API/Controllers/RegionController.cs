@@ -5,6 +5,7 @@ using Marathon.API.Models.DTO;
 using Marathon.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace Marathon.API.Controllers
 {
@@ -22,9 +23,12 @@ namespace Marathon.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetRegionRecords()
+		public async Task<IActionResult> GetRegionRecords([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+			[FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+			[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
 		{
-			var regionDomainRecords = await regionRepository.GetAllRegionsAsync();
+			var regionDomainRecords = await regionRepository.GetAllRegionsAsync(filterOn, filterQuery, sortBy,
+					isAscending ?? true, pageNumber, pageSize);
 
 			var regionResponse = mapper.Map<List<RegionResponseDto>>(regionDomainRecords);
 

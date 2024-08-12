@@ -21,9 +21,12 @@ namespace Marathon.API.Controllers
 			this.mapper=mapper;
 		}
         [HttpGet]
-		public async Task<IActionResult> GetRaceRecords()
+		public async Task<IActionResult> GetRaceRecords([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+			[FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+			[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
 		{
-			var raceRecords = await raceRepository.GetAllRacesAsync();
+			var raceRecords = await raceRepository.GetAllRacesAsync(filterOn, filterQuery, sortBy,
+					isAscending ?? true, pageNumber, pageSize);
 
 			var raceResponse = mapper.Map<List<RaceResponseDto>>(raceRecords);
 

@@ -40,9 +40,42 @@ namespace Marathon.API.Repositories
 
 		}
 
-		public async Task<List<Registration>> GetRegistrationsAsync()
+		public async Task<List<Registration>> GetRegistrationsAsync(string? filterOn = null, string? filterQuery = null,
+			string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
 		{
-			return await DbContext.Registrations.Include("Runner").Include("Race").ToListAsync();
+			var registrations = DbContext.Registrations.Include("Runner").Include("Race").AsQueryable();
+
+			// Filtering
+			if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+			{
+				if (filterOn.Equals("RegistrationDate", StringComparison.OrdinalIgnoreCase))
+				{
+					registrations = registrations.Where(x => x.RegistrationDate.ToString().Contains(filterQuery));
+				}
+				else if (filterOn.Equals("BibNumber", StringComparison.OrdinalIgnoreCase))
+				{
+					registrations = registrations.Where(x => x.BibNumber.Contains(filterQuery));
+				}
+			}
+
+			// Sorting 
+			if (string.IsNullOrWhiteSpace(sortBy) == false)
+			{
+				if (sortBy.Equals("RegistrationDate", StringComparison.OrdinalIgnoreCase))
+				{
+					registrations = isAscending ? registrations.OrderBy(x => x.RegistrationDate) : registrations.OrderByDescending(x => x.RegistrationDate);
+				}
+				if (sortBy.Equals("BibNumber", StringComparison.OrdinalIgnoreCase))
+				{
+					registrations = isAscending ? registrations.OrderBy(x => x.BibNumber) : registrations.OrderByDescending(x => x.BibNumber);
+				}
+			}
+
+			// Pagination
+			var skipResults = (pageNumber - 1) * pageSize;
+
+			return await registrations.Skip(skipResults).Take(pageSize).ToListAsync();
+			//return await DbContext.Registrations.Include("Runner").Include("Race").ToListAsync();
 		}
 
 		public async Task<Registration?> UpdateRegistrationAsync(int id, Registration registration)

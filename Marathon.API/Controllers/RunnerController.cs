@@ -6,6 +6,7 @@ using Marathon.API.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace Marathon.API.Controllers
 {
@@ -23,10 +24,16 @@ namespace Marathon.API.Controllers
 			this.mapper=mapper;
 			this.logger=logger;
 		}
-        [HttpGet]
-		public async Task<IActionResult> GetRunnerRecord()
+
+		//GET: /api/Runner? filterOn = Name&filterQuery=Track&sortBy=Name&isAscending=true&pageNumber=1&pageSize=10
+		[HttpGet]
+		public async Task<IActionResult> GetRunnerRecord([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+			[FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+			[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
 		{
-			var runnerDomainRecords = await runnerRepository.GetAllRunnersAsync();
+			var runnerDomainRecords = await runnerRepository.GetAllRunnersAsync(filterOn, filterQuery, sortBy,
+					isAscending ?? true, pageNumber, pageSize);
+
 			var runnerResponse = mapper.Map<List<RunnerResponseDto>>(runnerDomainRecords);
 			return Ok(runnerDomainRecords);
 		}

@@ -5,6 +5,7 @@ using Marathon.API.Models.DTO;
 using Marathon.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace Marathon.API.Controllers
 {
@@ -21,9 +22,12 @@ namespace Marathon.API.Controllers
 			this.mapper=mapper;
 		}
 		[HttpGet]
-		public async Task<IActionResult> GetAllResults()
+		public async Task<IActionResult> GetAllResults([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+			[FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+			[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
 		{
-			var resultDomainRecords = await resultRepository.GetAllResultRecordsAsync();
+			var resultDomainRecords = await resultRepository.GetAllResultRecordsAsync(filterOn, filterQuery, sortBy,
+					isAscending ?? true, pageNumber, pageSize);
 
 			var resultResponse = mapper.Map<List<ResultResponseDto>>(resultDomainRecords);
 			return Ok(resultResponse);

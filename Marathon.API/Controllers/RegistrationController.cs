@@ -22,9 +22,12 @@ namespace Marathon.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetRegistrationRecords()
+		public async Task<IActionResult> GetRegistrationRecords([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+			[FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+			[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
 		{
-			var registrationDomainRecords = await registrationRepository.GetRegistrationsAsync();
+			var registrationDomainRecords = await registrationRepository.GetRegistrationsAsync(filterOn, filterQuery, sortBy,
+					isAscending ?? true, pageNumber, pageSize);
 
 			var registrationResponse = mapper.Map<List<RegistrationResponseDto>>(registrationDomainRecords);
 			return Ok(registrationResponse);

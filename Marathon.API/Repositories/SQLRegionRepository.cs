@@ -34,9 +34,42 @@ namespace Marathon.API.Repositories
 
 		}
 
-		public async Task<List<Region>> GetAllRegionsAsync()
+		public async Task<List<Region>> GetAllRegionsAsync(string? filterOn = null, string? filterQuery = null,
+			string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 1000)
 		{
-			return await DbContext.Regions.ToListAsync();	
+			var regions = DbContext.Regions.AsQueryable();
+
+			// Filtering
+			if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+			{
+				if (filterOn.Equals("RegionName", StringComparison.OrdinalIgnoreCase))
+				{
+					regions = regions.Where(x => x.RegionName.Contains(filterQuery));
+				}
+				else if (filterOn.Equals("Code", StringComparison.OrdinalIgnoreCase))
+				{
+					regions = regions.Where(x => x.Code.Contains(filterQuery));
+				}
+			}
+
+			// Sorting 
+			if (string.IsNullOrWhiteSpace(sortBy) == false)
+			{
+				if (sortBy.Equals("RegionName", StringComparison.OrdinalIgnoreCase))
+				{
+					regions = isAscending ? regions.OrderBy(x => x.RegionName) : regions.OrderByDescending(x => x.RegionName);
+				}
+				else if (sortBy.Equals("Code", StringComparison.OrdinalIgnoreCase))
+				{
+					regions = isAscending ? regions.OrderBy(x => x.Code) : regions.OrderByDescending(x => x.Code);
+				}
+			}
+
+			// Pagination
+			var skipResults = (pageNumber - 1) * pageSize;
+
+			return await regions.Skip(skipResults).Take(pageSize).ToListAsync();
+			//return await DbContext.Regions.ToListAsync();	
 		}
 
 		public async Task<Region?> GetRegionByIdAsync(int id)
