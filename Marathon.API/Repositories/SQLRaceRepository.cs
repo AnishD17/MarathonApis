@@ -51,6 +51,7 @@ namespace Marathon.API.Repositories
 				return null;
 			}
 			race.Location = existingRaceRecord.Location;
+			race.DifficultyId = existingRaceRecord.DifficultyId;
 			race.Name = existingRaceRecord.Name;
 			race.Date = existingRaceRecord.Date;
 			race.RegionId = existingRaceRecord.RegionId;

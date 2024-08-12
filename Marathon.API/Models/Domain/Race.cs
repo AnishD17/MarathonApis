@@ -6,6 +6,7 @@
 		public string Name { get; set; }
 		public DateTime Date { get; set; }
 		public string Location { get; set; }
+		public int? DistanceInKm { get; set; }
 		public int RegionId { get; set; }
 		public int DifficultyId { get; set; }
 
