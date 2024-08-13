@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Marathon.UI.Models.DTO.RunnerDto>
+@{
+}
+
+<h1 class="mt-3">Runners</h1>
+
+<div class="d-flex justify-content-end">
+    <a class="btn btn-secondary" asp-controller="Runner" asp-action="Add">Add Runner</a>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>DateOfBirth</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var runner in Model)
+        {
+            <tr>
+                <td>@runner.Id</td>
+                <td>@runner.FirstName</td>
+                <td>@runner.LastName</td>
+                <td>@runner.DateOfBirth</td>
+                <td>@runner.Email</td>
+                <td>@runner.PhoneNumber</td>
+@*                 <td>
+                    <a asp-controller="Regions" asp-action="Edit" asp-route-id="@walk.Id"
+                       class="btn btn-light">Edit</a>
+                </td> *@
+            </tr>
+        }
+    </tbody>
+</table>
